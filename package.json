@@ -1,0 +1,31 @@
+{
+  "name": "zama-fhevm-hardhat-starter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install || echo nohusky",
+    "build": "hardhat compile",
+    "clean": "rimraf cache artifacts",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.ts",
+    "deploy:sepolia": "hardhat run --network sepolia scripts/deploy.ts"
+  },
+  "devDependencies": {
+    "@fhevm/hardhat-plugin": "^0.0.1",
+    "@nomicfoundation/hardhat-ethers": "^3.0.6",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.11.30",
+    "chai": "^4.4.1",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.12.1",
+    "hardhat": "^2.22.10",
+    "rimraf": "^5.0.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@fhevm/solidity": "^0.2.0"
+  }
+}
