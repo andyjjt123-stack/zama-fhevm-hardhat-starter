@@ -43,4 +43,3 @@ npm run deploy:sepolia
 - `hardhat.config.ts` — 已包含 FHEVM plugin 與 Sepolia 設定
 
 ---
-想要我幫你加上一個最小的 Vue 前端（加密輸入 → 發交易 → 用使用者金鑰解密顯示結果），跟你現在專案風格一致，我也可以直接補上。
