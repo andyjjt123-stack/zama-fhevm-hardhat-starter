@@ -1,9 +1,9 @@
 {
   "name": "zama-fhevm-hardhat-starter",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "prepare": "husky install || echo nohusky",
+    "prepare": "echo",
     "build": "hardhat compile",
     "clean": "rimraf cache artifacts",
     "test": "hardhat test",

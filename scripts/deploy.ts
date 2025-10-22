@@ -1,13 +1,7 @@
 import { ethers } from "hardhat";
-
 async function main() {
   const factory = await ethers.getContractFactory("FHECounter");
-  const contract = await factory.deploy();
-  const address = await contract.getAddress();
-  console.log("FHECounter deployed to:", address);
+  const c = await factory.deploy();
+  console.log("FHECounter deployed to:", await c.getAddress());
 }
-
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main().catch((e)=>{ console.error(e); process.exitCode = 1; });

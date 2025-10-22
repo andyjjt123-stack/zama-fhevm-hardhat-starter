@@ -1,45 +1,155 @@
-# Zama FHEVM Hardhat Starter — FHE Counter
+# 🔐 Zama FHEVM Hardhat Starter + Vue 前端示例  
+*(Bilingual 中文 / English)*
 
-一個「可直接執行」的 FHE 合約範例專案：用 Zama 的 FHEVM 在鏈上對**加密數值**做加總/相減，並由使用者端解密驗證。
+---
 
-## 需求
-- Node.js 20+（LTS 建議）
-- npm / yarn / pnpm 其一
-- （選）Sepolia RPC 與錢包助記詞（部署上線用）
+## 📘 專案簡介 Project Overview
 
-## 安裝
-```bash
-npm i
+這是一個整合 **Zama FHEVM** 的完整開發範例，展示如何：  
+1. 使用 **Hardhat + Solidity** 建立「加密運算（Fully Homomorphic Encryption, FHE）」智慧合約。  
+2. 使用 **Vue 3 + @zama-fhe/relayer-sdk** 前端，進行「加密輸入 → 區塊鏈交易 → 使用者端解密」。  
+
+This repository demonstrates how to build and interact with **Zama’s Fully Homomorphic Encryption Virtual Machine (FHEVM)** using both:  
+1. **Hardhat (Solidity)** for smart contract development.  
+2. **Vue 3 frontend** that encrypts inputs, sends blockchain transactions, and decrypts outputs on the client side.
+
+---
+
+## 🧩 專案結構 Project Structure
+
+```
+zama-fhevm-hardhat-starter/
+├── contracts/           # Solidity contracts (FHECounter)
+├── test/                # Hardhat + FHEVM Plugin unit tests
+├── scripts/             # Deployment scripts (deploy.ts)
+├── frontend-vue/        # Minimal Vue 3 frontend using @zama-fhe/relayer-sdk
+├── hardhat.config.ts    # Hardhat configuration (includes FHEVM plugin)
+├── package.json         # Backend dependencies
+├── README.md            # (You are here)
+└── .env.example         # Sample environment variables
 ```
 
-## 編譯與測試（本地 Hardhat）
+---
+
+## ⚙️ 系統需求 Requirements
+
+| Component | Version |
+|------------|----------|
+| Node.js | ≥ 18 (LTS) |
+| npm | ≥ 9 |
+| Hardhat | 2.22+ |
+| Vue | 3.x |
+| TypeScript | 5.x |
+
+---
+
+## 🧱 安裝與啟動 Installation & Quick Start
+
+### 🧭 1. Hardhat 後端 (Smart Contract)
+
 ```bash
+npm install
 npm run build
 npm test
 ```
 
-測試中會使用 `@fhevm/hardhat-plugin`：
-- 透過 `fhevm.createEncryptedInput()` 產生加密輸入
-- 交易送進 `FHECounter.increment/decrement(...)`
-- 用 `fhevm.userDecryptEuint(...)` 還原驗證
+> 測試使用 `@fhevm/hardhat-plugin`：自動建立加密輸入、執行交易、解密驗證。
 
-## 部署
-1. 複製 `.env.example` 成 `.env`，填入 `SEPOLIA_RPC` 與 `MNEMONIC`
-2. 執行：
+### 🚀 2. 部署到 Sepolia 測試網 (Deploy to Sepolia)
+
 ```bash
+cp .env.example .env
+# 編輯 .env，填入 SEPOLIA_RPC 與 MNEMONIC
 npm run deploy:sepolia
 ```
 
-## 重要文件（官方）
-- FHE Counter 範例與測試寫法：https://docs.zama.ai/protocol/examples
-- Hardhat 測試與環境：https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test
-- 快速把普通合約改成 FHE 合約：https://docs.zama.ai/protocol/solidity-guides/getting-started/quick-start-tutorial/turn_it_into_fhevm
-- Relayer SDK（前端與合約互動）：https://docs.zama.ai/protocol/relayer-sdk-guides
+---
 
-## 目錄
-- `contracts/FHECounter.sol` — 使用 `@fhevm/solidity` 的加密計數器
-- `test/FHECounter.ts` — 使用 Hardhat plugin 加密/解密的單元測試
-- `scripts/deploy.ts` — 部署腳本
-- `hardhat.config.ts` — 已包含 FHEVM plugin 與 Sepolia 設定
+### 🖥️ 3. Vue 前端 (Frontend-Vue)
+
+```bash
+cd frontend-vue
+npm install
+cp .env.example .env
+npm run dev
+```
+
+打開 [http://localhost:5173](http://localhost:5173) 後可：  
+- 連接錢包 → 貼上合約地址 → 輸入數值 → 點 Increment / Decrement  
+- 顯示鏈上加密值與本地解密結果。
+
+---
+
+## 🔄 FHE 運作流程 FHE Execution Flow
+
+```
+[使用者前端 Vue]
+   ↓
+加密輸入 (createEncryptedInput + encrypt)
+   ↓
+呼叫智慧合約 (increment/decrement)
+   ↓
+[區塊鏈 FHEVM]
+   → 驗證 proof
+   → 運算 euint32 數值
+   → 更新加密狀態
+   ↓
+[使用者端]
+   ← 取得加密值 handle
+   ← userDecryptEuint 解密回明文
+```
+
+| 階段 Stage | 模組 Module | 功能 Function |
+|-------------|-------------|----------------|
+| Encryption | @zama-fhe/relayer-sdk | 前端加密輸入與生成證明 |
+| Verification | FHE.fromExternal | 智慧合約驗證證明 |
+| Computation | FHE.add / sub | 加密狀態下進行運算 |
+| Decryption | userDecryptEuint | 使用者端解密結果 |
+
+---
+
+## 🧪 測試與驗證 Testing & Verification
+
+測試檔 `test/FHECounter.ts` 驗證完整流程：  
+- 加密輸入 → 呼叫 increment → 讀取 getCount → 使用者解密。  
+- 驗證計數器從 0 → 1 → 0。
+
+---
+
+## 🏗️ 關鍵元件 Key Components
+
+| 模組 | 說明 Description |
+|------|------------------|
+| `@fhevm/solidity` | 提供 FHE 資料型別（euint32）與運算函式 |
+| `@fhevm/hardhat-plugin` | 測試階段自動加密/解密支援 |
+| `@zama-fhe/relayer-sdk` | 前端 SDK 用於加密、驗證、解密 |
+| `SepoliaConfig` | 自動設定 Sepolia FHEVM 測試網環境 |
+
+---
+
+## 🌐 環境變數 Environment Variables
+
+`.env.example` 內已填入 Sepolia 測試網預設：  
+```bash
+VITE_RELAYER_URL=https://relayer.testnet.zama.cloud
+VITE_ACL_CONTRACT=0x687820221192C5B662b25367F70076A37bc79b6c
+```
+
+請至 Zama 官方文件確認最新設定：  
+🔗 https://docs.zama.ai/
+
+---
+
+## 🌟 English Summary
+
+This repo is a complete example showing how to:  
+- Build an FHE-enabled smart contract with Hardhat.  
+- Interact from Vue frontend via encrypted input / local decryption.  
+- Use Zama’s Relayer SDK on Sepolia testnet.  
+
+**Highlights:**  
+- End-to-end FHE workflow (Encrypt → Compute → Decrypt).  
+- Vue interface ready for custom integration.  
+- Designed for developers exploring Zama FHEVM.
 
 ---
